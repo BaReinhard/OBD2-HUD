@@ -40,14 +40,17 @@ class HUD(tk.Tk):
 	def Sanitize(self):
 		if str(self.RPM).partition(" ")[0] == "None":
 			self.RPM = 0
+		else:
+			print(str(self.RPM).partition(" ")[0])
+			self.RPM=float(str(self.RPM).partition(" ")[0])
 		if str(self.SPEED).partition(" ")[0] == "None":
 			self.SPEED = 0
 		else:
-			self.SPEED = self.SPEED/1.609344 #converts KMH to MPH
+			self.SPEED = float(str(self.SPEED).partition(" ")[0])/1.609344 #converts KMH to MPH
 		if str(self.TEMP).partition(" ")[0] == "None":
 			self.TEMP = 32
 		else:
-			self.TEMP = ((self.TEMP*9)/5)+32
+			self.TEMP = ((float(str(self.TEMP).partition(" ")[0])*9)/5)+32
 
 	def Read(self):
 		self.RPM = connection.query(cmdRPM)
@@ -104,9 +107,9 @@ class HUD(tk.Tk):
 			for x in range(1,int(self.TEMP/28.5)):
 				self.canvas.create_line(self.width*(24+x)/52,self.tempLineStart,self.width*(24+x)/52,self.tempLineEnd,fill=self.fillColor,width=self.lineWidth)
 			self.canvas.create_text(self.width/2,self.height-3*self.height/8,text=str(int(self.TEMP))+ "° F",font=self.font,fill=self.TextColor,tag="text")
-		print("Time:" + str(time.time()-self.Time) + " - Number of Loops: " + str(self.counter))
+		#print("Time:" + str(time.time()-self.Time) + " - Number of Loops: " + str(self.counter))
 		self.counter = self.counter + 1
-		self.after(25,self.Update)
+		self.after(255,self.Update)
 		
 
 
@@ -118,5 +121,7 @@ cmdTEMP = obd.commands.COOLANT_TEMP
 connection.watch(cmdRPM,force=True)
 connection.watch(cmdSPEED,force=True)
 connection.watch(cmdTEMP,force=True)
+connection.start()
+
 myHUD=HUD()
 myHUD.mainloop()		
